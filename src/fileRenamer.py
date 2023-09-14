@@ -34,7 +34,6 @@ class FileRenamer():
         for filename in os.listdir(path):
 
             if (filename != f"0{start-1}{file_extension}"): # No need to rename the file before the start
-                print(filename)
                 new_name += str(i)
 
                 # File renaming
@@ -59,7 +58,6 @@ class FileRenamer():
         for filename in os.listdir(path):
 
             if (filename != f"0{start-1}{file_extension}"):
-                print(filename)
 
                 original_name = path + filename
                 new_name = path + filename[2:] # Get the original name without the "n_" (basically remove the first two characters)
@@ -77,7 +75,7 @@ class FileRenamer():
             rename_format (str, optional): The format of the renamed files. Defaults to "0". Can be "00", "000", etc. (0=01, 00=001, etc.)
         """
         self.__renamer(path, file_extension, start, rename_format)
-        sleep(3)
+        sleep(3) # Wait 3 seconds before removing the "n_" (to avoid dupe bugs)
         self.__remove_n(path, file_extension, start)
 
 # tests
