@@ -28,20 +28,22 @@ class FileRenamer():
             Rename the files of a manga chapter downloaded from rawkuma with HakuNeko (because page 2 is a trashy ad). \n
             The first file is not renamed because it's not displaced.
         """
-        i: int = 2 # No need to rename the first file
+        i: int = start # No need to rename the files before the start
         new_name : str = "0"
 
         for filename in os.listdir(path):
 
-            if filename != "01.jpg": # No need to rename the first file
+            if filename != f"0{start-1}.jpg": # No need to rename the file before the start
                 new_name += str(i)
 
+                # File renaming
                 new_name = "n_" + new_name + ".jpg" # Setting the new name
                 original_name = path + filename # Getting the original name
                 new_name = path + new_name # Renaming the file
 
                 os.rename(original_name, new_name) # Rename the file
 
+                # Checks
                 if i >= 9: # Reset the new_name variable (no 010.jpg)
                     new_name = ""
                 else:
