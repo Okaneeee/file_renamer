@@ -8,7 +8,8 @@ Author: Okane (Zinnia Scans)
 """
 
 # imports
-from PyQt6.QtWidgets import QPushButton, QVBoxLayout, QWidget, QFileDialog, QLabel, QHBoxLayout
+from PyQt6.QtWidgets import QPushButton, QVBoxLayout, QWidget, QFileDialog, QLabel, QHBoxLayout, QLineEdit
+from PyQt6.QtCore import Qt
 from fileRenamer import FileRenamer
 
 # class
@@ -20,12 +21,28 @@ class renameView(QWidget):
         self.resize(500, 500)
 
         # main layout
-        self.topLayout : QVBoxLayout = QVBoxLayout()
+        self.topLayout: QVBoxLayout = QVBoxLayout()
         self.setLayout(self.topLayout)
-        self.load : QPushButton = QPushButton("Select folder") ; self.topLayout.addWidget(self.load)
+        
+        # QLine layout
+        self.lineLayout: QHBoxLayout = QHBoxLayout()
+        self.topLayout.addLayout(self.lineLayout)
+
+        # Buttons layout
+        self.buttonsLayout: QHBoxLayout = QHBoxLayout()
+        self.topLayout.addLayout(self.buttonsLayout)
+
+        # Folder selection layout
+        self.folderLayout: QVBoxLayout = QVBoxLayout()
+        self.buttonsLayout.addLayout(self.folderLayout)
+
+        # widgets
+        self.folderLoader: QPushButton = QPushButton("Select folder") ; self.folderLayout.addWidget(self.folderLoader)
+        self.selectedFolder: QLabel = QLabel("No folder selected") ; self.folderLayout.addWidget(self.selectedFolder)
+        self.selectedFolder.setAlignment(Qt.AlignmentFlag.AlignCenter) ; self.folderLayout.addStretch()
 
         # signals
-        self.load.clicked.connect(self.open)
+        self.folderLoader.clicked.connect(self.open)
         
         # show GUI
         self.show()
@@ -33,13 +50,14 @@ class renameView(QWidget):
     # callbacks
     def open(self) -> None:
         folder = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        self.selectedFolder.setText(f"𝐒𝐞𝐥𝐞𝐜𝐭𝐞𝐝 𝐅𝐨𝐥𝐝𝐞𝐫: {folder}")
         print(folder)
 
 # test
 if __name__ == "__main__":
     from PyQt6.QtWidgets import QApplication
     from sys import argv, exit
-    app : QApplication = QApplication(argv)
+    app: QApplication = QApplication(argv)
     window = renameView()
 
     # show GUI
