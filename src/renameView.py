@@ -10,6 +10,7 @@ Author: Okane (Zinnia Scans)
 # imports
 from PyQt6.QtWidgets import QPushButton, QVBoxLayout, QWidget, QFileDialog, QLabel, QHBoxLayout, QLineEdit
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon
 from fileRenamer import FileRenamer
 
 # class
@@ -18,6 +19,7 @@ class renameView(QWidget):
         # default
         super().__init__()
         self.setWindowTitle("File Renamer")
+        self.setWindowIcon(QIcon("assets/icon.png"))
         self.resize(500, 500)
 
         # main layout
@@ -29,11 +31,11 @@ class renameView(QWidget):
         self.topLayout.addLayout(self.lineLayout)
 
         # Buttons layout
-        self.buttonsLayout: QHBoxLayout = QHBoxLayout()
+        self.buttonsLayout: QVBoxLayout = QVBoxLayout()
         self.topLayout.addLayout(self.buttonsLayout)
 
         # Folder selection layout
-        self.folderLayout: QVBoxLayout = QVBoxLayout()
+        self.folderLayout: QVBoxLayout = QVBoxLayout() ; self.folderLayout.addStretch()
         self.buttonsLayout.addLayout(self.folderLayout)
 
         # widgets
@@ -41,8 +43,11 @@ class renameView(QWidget):
         self.selectedFolder: QLabel = QLabel("No folder selected") ; self.folderLayout.addWidget(self.selectedFolder)
         self.selectedFolder.setAlignment(Qt.AlignmentFlag.AlignCenter) ; self.folderLayout.addStretch()
 
+        self.renameButton: QPushButton = QPushButton("Rename") ; self.buttonsLayout.addWidget(self.renameButton)
+
         # signals
         self.folderLoader.clicked.connect(self.open)
+        self.renameButton.clicked.connect(self.rename)
         
         # show GUI
         self.show()
@@ -51,7 +56,9 @@ class renameView(QWidget):
     def open(self) -> None:
         folder = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
         self.selectedFolder.setText(f"𝐒𝐞𝐥𝐞𝐜𝐭𝐞𝐝 𝐅𝐨𝐥𝐝𝐞𝐫: {folder}")
-        print(folder)
+
+    def rename(self) -> None:
+        ...
 
 # test
 if __name__ == "__main__":
