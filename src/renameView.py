@@ -16,10 +16,9 @@ from os import path
 
 # classes
 class popup(QWidget):
-    def __init__(self) -> None:
+    def __init__(self, popupText: str) -> None:
         # default
         super().__init__()
-        self.setWindowTitle("Files Renamer") ; self.setWindowIcon(QIcon("assets/warning.png"))
         self.resize(160, 80) ; self.setFixedSize(self.size())
 
         # main layout
@@ -27,8 +26,17 @@ class popup(QWidget):
 
         # widgets
         # --- warning message ---
-        self.warning: QLabel = QLabel("Something is wrong !") ; self.warning.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.mainLayout.addWidget(self.warning)
+        if (popupText == "warning"):
+            self.setWindowTitle("Warning")
+            self.setWindowIcon(QIcon("assets/warning.png"))
+            self.pText: QLabel = QLabel("Something is wrong!")
+        else:
+            self.setWindowTitle("Notice")
+            self.setWindowIcon(QIcon("assets/checkmark.png"))
+            self.pText: QLabel = QLabel("Done!")
+
+        self.pText.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.mainLayout.addWidget(self.pText)
 
         # --- close button ---
         self.closeButton : QPushButton = QPushButton("Close")
@@ -48,7 +56,6 @@ class renameView(QWidget):
         self.setWindowTitle("Files Renamer") ; self.setWindowIcon(QIcon("assets/icon.png"))
         self.resize(500, 220) ; self.setFixedSize(self.size())
         self.fr: FileRenamer = FileRenamer()
-        self.popup: popup = popup()
 
         # main layout
         self.topLayout: QVBoxLayout = QVBoxLayout()
@@ -121,8 +128,9 @@ class renameView(QWidget):
 
         if(selectedFolderCheck and startFileCheck and startNumberCheck and renameFormatCheck and fileExtCheck):
             self.fr.rename(folder, fileExt, startFile, int(startNb), renameFrmt)
+            self.popUp: popup = popup("done") ; self.popUp.show()
         else:
-            self.popup.show()
+            self.popUp: popup = popup("warning") ; self.popUp.show()
 
 # test
 if __name__ == "__main__":
