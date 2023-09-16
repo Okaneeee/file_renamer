@@ -22,14 +22,34 @@ Author: Okane (Zinnia Scans)
 import os
 from time import sleep
 
-# Class
+# class
 class FileRenamer():
+    def __init__(self) -> None:
+        self.sleepTime: int
+
+    def __setSleepTime(self, filelist: list[str]):
+        """
+            Set the sleep time depending on the number of files to rename.
+        """
+        if len(filelist) <= 30:
+            self.sleepTime = 2
+        elif len(filelist) <= 60:
+            self.sleepTime = 3
+        elif len(filelist) <= 120:
+            self.sleepTime = 5
+        elif len(filelist) <= 1000:
+            self.sleepTime = 10
+        else:
+            self.sleepTime = 20
+
     def __renamer(self, path: str, file_extension: str, start_file_name: str, start_number: int, rename_format: str):
         """
             Rename any file in a folder, starting at a given number and avoid dupes. \n
         """
         i: int = start_number # No need to rename the files before the start
         new_name : str = rename_format
+
+        self.__setSleepTime(os.listdir(path))
 
         for filename in os.listdir(path):
 
@@ -70,17 +90,18 @@ class FileRenamer():
 
         Args:
             path (str): The path to the folder containing the files to rename
-            start_file_name (str, optional): The name of the first file to rename +1. Defaults to "00" (If you want to start renaming at the second file (02, 03...), put "01")
             file_extension (str, optional): The extension of the files to rename and the extension of the renamed files. Defaults to ".jpg".
+            start_file_name (str, optional): The name of the first file to rename +1. Defaults to "00" (If you want to start renaming at the second file (02, 03...), put "01")
             start_number (int, optional): The number of the first file to rename. Defaults to 0. (If you want to start renaming at the second file (02, 03...), put 2)
-            rename_format (str, optional): The format of the renamed files. Defaults to blank. Can be "0", "00", etc. (0=01, 00=001, etc.)
+            rename_format (str, optional): The format of the renamed files. Defaults to blank. Can be "0", "00", etc. (""=1, 0=01, 00=001, etc.)
         """
         self.__renamer(path, file_extension, start_file_name, start_number, rename_format)
-        sleep(2) # Wait 2 seconds before removing the "n_" (to avoid dupe bugs)
+        sleep(self.sleepTime) # Wait X seconds before removing the "n_" (to avoid dupe bugs)
         self.__remove_n(path, file_extension, start_file_name)
 
 # tests
 if __name__ == '__main__':
+    PATH: str
 
     fr = FileRenamer()
-    fr.rename("", 2)
+    fr.rename(PATH, ".jpg", "01", 2, "0")
