@@ -12,17 +12,19 @@ from PyQt6.QtWidgets import QPushButton, QVBoxLayout, QWidget, QFileDialog, QLab
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from fileRenamer import FileRenamer
-from os import path
+from os import path, startfile
 
 # classes
 class popup(QWidget):
-    def __init__(self, popupText: str) -> None:
+    def __init__(self, popupText: str, path: str = ...) -> None:
         # default
         super().__init__()
-        self.resize(160, 80) ; self.setFixedSize(self.size())
+        self.resize(200, 80) ; self.setFixedSize(self.size())
+        self.path = path
 
-        # main layout
+        # layouts
         self.mainLayout: QVBoxLayout = QVBoxLayout() ; self.setLayout(self.mainLayout)
+        self.buttonsLayout: QHBoxLayout = QHBoxLayout()
 
         # widgets
         # --- warning message ---
@@ -39,15 +41,25 @@ class popup(QWidget):
         self.mainLayout.addWidget(self.pText)
 
         # --- close button ---
+        if(popupText == "done"):
+            self.openFolderButton: QPushButton = QPushButton("Open Folder")
+            self.buttonsLayout.addWidget(self.openFolderButton)
+            # signal
+            self.openFolderButton.clicked.connect(self.openFolderCallback)
+
         self.closeButton : QPushButton = QPushButton("Close")
-        self.mainLayout.addWidget(self.closeButton)
+        self.buttonsLayout.addWidget(self.closeButton)
+
+        self.mainLayout.addLayout(self.buttonsLayout)
 
         # signal
         self.closeButton.clicked.connect(self.closeCallback)
 
-    # callback
+    # callbacks
     def closeCallback(self):
         self.close()
+    def openFolderCallback(self):
+        startfile(self.path)
 
 class renameView(QWidget):
     def __init__(self) -> None:
@@ -128,7 +140,7 @@ class renameView(QWidget):
 
         if(selectedFolderCheck and startFileCheck and startNumberCheck and renameFormatCheck and fileExtCheck):
             self.fr.rename(folder, fileExt, startFile, int(startNb), renameFrmt)
-            self.popUp: popup = popup("done") ; self.popUp.show()
+            self.popUp: popup = popup("done", folder) ; self.popUp.show()
         else:
             self.popUp: popup = popup("warning") ; self.popUp.show()
 
