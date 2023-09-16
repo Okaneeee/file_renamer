@@ -47,7 +47,7 @@ class popup(QWidget):
             # signal
             self.openFolderButton.clicked.connect(self.openFolderCallback)
 
-        self.closeButton : QPushButton = QPushButton("Close")
+        self.closeButton: QPushButton = QPushButton("Close")
         self.buttonsLayout.addWidget(self.closeButton)
 
         self.mainLayout.addLayout(self.buttonsLayout)
@@ -56,9 +56,10 @@ class popup(QWidget):
         self.closeButton.clicked.connect(self.closeCallback)
 
     # callbacks
-    def closeCallback(self):
+    def closeCallback(self) -> None:
         self.close()
-    def openFolderCallback(self):
+
+    def openFolderCallback(self) -> None:
         startfile(self.path)
 
 class renameView(QWidget):
@@ -66,7 +67,7 @@ class renameView(QWidget):
         # default
         super().__init__()
         self.setWindowTitle("Files Renamer") ; self.setWindowIcon(QIcon("assets/icon.png"))
-        self.resize(500, 220) ; self.setFixedSize(self.size())
+        self.resize(500, 250) ; self.setFixedSize(self.size())
         self.fr: FileRenamer = FileRenamer()
 
         # main layout
@@ -85,6 +86,9 @@ class renameView(QWidget):
         self.buttonsLayout: QVBoxLayout = QVBoxLayout()
         self.topLayout.addLayout(self.buttonsLayout)
 
+        self.downButtonsLayout: QHBoxLayout = QHBoxLayout()
+        self.topLayout.addLayout(self.downButtonsLayout)
+
         # Folder selection layout
         self.folderLayout: QVBoxLayout = QVBoxLayout() ; self.folderLayout.addStretch()
         self.buttonsLayout.addLayout(self.folderLayout)
@@ -96,24 +100,29 @@ class renameView(QWidget):
         self.selectedFolder.setAlignment(Qt.AlignmentFlag.AlignCenter) ; self.folderLayout.addStretch()
 
         # --- rename parameters ---
-        self.startFileName : QLineEdit = QLineEdit() ; self.startFileName.setPlaceholderText("Name of the first file to rename (+1)")
+        self.startFileName: QLineEdit = QLineEdit() ; self.startFileName.setPlaceholderText("Name of the first file to rename (+1)")
         self.startFileName.setFixedWidth(235) ; self.lineLayout1.addWidget(self.startFileName)
         
-        self.startNumber : QLineEdit = QLineEdit() ; self.startNumber.setPlaceholderText("Number of the first file to rename")
+        self.startNumber: QLineEdit = QLineEdit() ; self.startNumber.setPlaceholderText("Number of the first file to rename")
         self.startNumber.setFixedWidth(235) ; self.lineLayout1.addWidget(self.startNumber)
         
-        self.renameFormat : QLineEdit = QLineEdit() ; self.renameFormat.setPlaceholderText("Format of the renamed files")
+        self.renameFormat: QLineEdit = QLineEdit() ; self.renameFormat.setPlaceholderText("Format of the renamed files")
         self.renameFormat.setFixedWidth(235) ; self.lineLayout2.addWidget(self.renameFormat)
         
-        self.fileExtension : QComboBox = QComboBox() ; self.fileExtension.addItems(["", ".jpg", ".jpeg", ".png ", ".psd" , ".txt"]) ; self.fileExtension.setEditable(True)
+        self.fileExtension: QComboBox = QComboBox() ; self.fileExtension.addItems(["", ".jpg", ".jpeg", ".png ", ".psd" , ".txt"]) ; self.fileExtension.setEditable(True)
         self.fileExtension.setFixedWidth(235) ; self.lineLayout2.addWidget(self.fileExtension)
         
         # --- rename ---
         self.renameButton: QPushButton = QPushButton("Rename") ; self.buttonsLayout.addWidget(self.renameButton)
 
+        # --- down buttons ---
+        self.closeButton: QPushButton = QPushButton("Close")
+        self.downButtonsLayout.addWidget(self.closeButton)
+
         # signals
         self.folderLoader.clicked.connect(self.open)
         self.renameButton.clicked.connect(self.rename)
+        self.closeButton.clicked.connect(self.closeWindow)
         
         # show GUI
         self.show()
@@ -143,6 +152,9 @@ class renameView(QWidget):
             self.popUp: popup = popup("done", folder) ; self.popUp.show()
         else:
             self.popUp: popup = popup("warning") ; self.popUp.show()
+
+    def closeWindow(self) -> None:
+        self.close()
 
 # test
 if __name__ == "__main__":
