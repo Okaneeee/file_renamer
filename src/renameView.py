@@ -16,7 +16,33 @@ from PyQt6.QtGui import QIcon
 from fileRenamer import FileRenamer
 from os import path
 
-# class
+# classes
+class popup(QWidget):
+    def __init__(self) -> None:
+        # default
+        super().__init__()
+        self.setWindowTitle("Files Renamer") ; self.setWindowIcon(QIcon("assets/warning.png"))
+        self.resize(160, 80) ; self.setFixedSize(self.size())
+
+        # main layout
+        self.mainLayout: QVBoxLayout = QVBoxLayout() ; self.setLayout(self.mainLayout)
+
+        # widgets
+        # --- warning message ---
+        self.warning: QLabel = QLabel("Something is wrong !") ; self.warning.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.mainLayout.addWidget(self.warning)
+
+        # --- close button ---
+        self.closeButton : QPushButton = QPushButton("Close")
+        self.mainLayout.addWidget(self.closeButton)
+
+        # signal
+        self.closeButton.clicked.connect(self.closeCallback)
+
+    # callback
+    def closeCallback(self):
+        self.close()
+
 class renameView(QWidget):
     def __init__(self) -> None:
         # default
@@ -24,6 +50,7 @@ class renameView(QWidget):
         self.setWindowTitle("Files Renamer") ; self.setWindowIcon(QIcon("assets/icon.png"))
         self.resize(500, 220) ; self.setFixedSize(self.size())
         self.fr: FileRenamer = FileRenamer()
+        self.popup: popup = popup()
 
         # main layout
         self.topLayout: QVBoxLayout = QVBoxLayout()
@@ -80,7 +107,6 @@ class renameView(QWidget):
         self.selectedFolder.setText(folder)
 
     def rename(self) -> None:
-
         # Texts
         folder: str = self.selectedFolder.text().strip()
         startFile: str = self.startFileName.text().strip()
@@ -98,7 +124,7 @@ class renameView(QWidget):
         if(selectedFolderCheck and startFileCheck and startNumberCheck and renameFormatCheck and fileExtCheck):
             self.fr.rename(folder, fileExt, startFile, int(startNb), renameFrmt)
         else:
-            self.selectedFolder.setText("Something is wrong !")
+            self.popup.show()
 
 # test
 if __name__ == "__main__":
