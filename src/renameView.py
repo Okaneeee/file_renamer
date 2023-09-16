@@ -12,16 +12,15 @@ from PyQt6.QtWidgets import QPushButton, QVBoxLayout, QWidget, QFileDialog, QLab
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from fileRenamer import FileRenamer
+from os import path
 
 # class
 class renameView(QWidget):
     def __init__(self) -> None:
         # default
         super().__init__()
-        self.setWindowTitle("Files Renamer")
-        self.setWindowIcon(QIcon("assets/icon.png"))
-        self.resize(500, 220)
-        self.setFixedSize(self.size())
+        self.setWindowTitle("Files Renamer") ; self.setWindowIcon(QIcon("assets/icon.png"))
+        self.resize(500, 220) ; self.setFixedSize(self.size())
         self.fr: FileRenamer = FileRenamer()
 
         # main layout
@@ -50,21 +49,21 @@ class renameView(QWidget):
         self.selectedFolder: QLabel = QLabel("No folder selected") ; self.folderLayout.addWidget(self.selectedFolder)
         self.selectedFolder.setAlignment(Qt.AlignmentFlag.AlignCenter) ; self.folderLayout.addStretch()
 
-        # --- rename ---
-        self.renameButton: QPushButton = QPushButton("Rename") ; self.buttonsLayout.addWidget(self.renameButton)
-
         # --- rename parameters ---
         self.startFileName : QLineEdit = QLineEdit() ; self.startFileName.setPlaceholderText("Name of the first file to rename (+1)")
         self.startFileName.setFixedWidth(235) ; self.lineLayout1.addWidget(self.startFileName)
         
-        self.startNumber : QLineEdit = QLineEdit() ; self.startNumber.setPlaceholderText("Name of the first file to rename (+1)")
+        self.startNumber : QLineEdit = QLineEdit() ; self.startNumber.setPlaceholderText("Number of the first file to rename")
         self.startNumber.setFixedWidth(235) ; self.lineLayout1.addWidget(self.startNumber)
         
         self.renameFormat : QLineEdit = QLineEdit() ; self.renameFormat.setPlaceholderText("Format of the renamed files")
         self.renameFormat.setFixedWidth(235) ; self.lineLayout2.addWidget(self.renameFormat)
         
-        self.fileExtension : QComboBox = QComboBox() ; self.fileExtension.addItems(["File extension (customizable)", ".jpg", ".jpeg", ".png ", ".psd" , ".txt"]) ; self.fileExtension.setEditable(True)
+        self.fileExtension : QComboBox = QComboBox() ; self.fileExtension.addItems(["", ".jpg", ".jpeg", ".png ", ".psd" , ".txt"]) ; self.fileExtension.setEditable(True)
         self.fileExtension.setFixedWidth(235) ; self.lineLayout2.addWidget(self.fileExtension)
+        
+        # --- rename ---
+        self.renameButton: QPushButton = QPushButton("Rename") ; self.buttonsLayout.addWidget(self.renameButton)
 
         # signals
         self.folderLoader.clicked.connect(self.open)
@@ -79,7 +78,17 @@ class renameView(QWidget):
         self.selectedFolder.setText(folder)
 
     def rename(self) -> None:
-        print("rename")
+        selectedFolderCheck: bool = (path.isdir(self.selectedFolder.text().strip()))
+        startFileCheck: bool = bool(self.startFileName.text().strip())
+        startNumberCheck: bool = bool(self.startNumber.text().strip())
+        renameFormatCheck: bool = bool(self.renameFormat.text().strip())
+        fileExtCheck: bool = bool(self.fileExtension.currentText().strip()) and ("." in self.fileExtension.currentText().strip()) and (self.fileExtension.currentText().strip() != ".")
+
+        if(selectedFolderCheck and startFileCheck and startNumberCheck and renameFormatCheck and fileExtCheck):
+            print("rename")
+        else:
+            print(selectedFolderCheck, startFileCheck, startNumberCheck, renameFormatCheck, fileExtCheck)
+            self.selectedFolder.setText("Something's missing !")
 
 # test
 if __name__ == "__main__":
