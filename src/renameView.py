@@ -8,6 +8,8 @@ Author: Okane (Zinnia Scans)
 """
 
 # imports
+import typing
+from PyQt6 import QtCore
 from PyQt6.QtWidgets import QPushButton, QVBoxLayout, QWidget, QFileDialog, QLabel, QHBoxLayout, QLineEdit, QComboBox
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
@@ -78,17 +80,25 @@ class renameView(QWidget):
         self.selectedFolder.setText(folder)
 
     def rename(self) -> None:
-        selectedFolderCheck: bool = (path.isdir(self.selectedFolder.text().strip()))
-        startFileCheck: bool = bool(self.startFileName.text().strip())
-        startNumberCheck: bool = bool(self.startNumber.text().strip())
-        renameFormatCheck: bool = bool(self.renameFormat.text().strip())
-        fileExtCheck: bool = bool(self.fileExtension.currentText().strip()) and ("." in self.fileExtension.currentText().strip()) and (self.fileExtension.currentText().strip() != ".")
+
+        # Texts
+        folder: str = self.selectedFolder.text().strip()
+        startFile: str = self.startFileName.text().strip()
+        startNb: str = self.startNumber.text().strip()
+        renameFrmt: str = self.renameFormat.text().strip()
+        fileExt: str = self.fileExtension.currentText().strip()
+
+        # Checks
+        selectedFolderCheck: bool = (path.isdir(folder))
+        startFileCheck: bool = bool(startFile)
+        startNumberCheck: bool = bool(startNb.isdigit())
+        renameFormatCheck: bool = bool(renameFrmt)
+        fileExtCheck: bool = bool(fileExt) and ("." in self.fileExtension.currentText().strip()) and (self.fileExtension.currentText().strip() != ".")
 
         if(selectedFolderCheck and startFileCheck and startNumberCheck and renameFormatCheck and fileExtCheck):
-            print("rename")
+            self.fr.rename(folder, fileExt, startFile, int(startNb), renameFrmt)
         else:
-            print(selectedFolderCheck, startFileCheck, startNumberCheck, renameFormatCheck, fileExtCheck)
-            self.selectedFolder.setText("Something's missing !")
+            self.selectedFolder.setText("Something is wrong !")
 
 # test
 if __name__ == "__main__":
