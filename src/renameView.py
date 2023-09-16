@@ -108,7 +108,7 @@ class renameView(QWidget):
 
     def rename(self) -> None:
         # Texts
-        folder: str = self.selectedFolder.text().strip()
+        folder: str = self.selectedFolder.text().strip() + '/'
         startFile: str = self.startFileName.text().strip()
         startNb: str = self.startNumber.text().strip()
         renameFrmt: str = self.renameFormat.text().strip()
